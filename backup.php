@@ -1,15 +1,20 @@
 <?php
-function get_database_backup($host,$user,$pass,$name,$tables='*'){
+function __get_database_tables($db_conn){
+	$res=array();
+	$result=mysqli_query($db_conn,'SHOW TABLES');
+	while($row=mysqli_fetch_row($result)){
+		$res[]=$row[0];
+	};
+	
+	return $res;
+};
+function __get_database_backup($host,$user,$pass,$name,$tables='*'){
 	$link=mysqli_connect($host,$user,$pass);
 	mysqli_select_db($link,$name);
 	mysqli_query($link,'SET NAMES utf8');
 	
 	if($tables=='*'){
-		$tables=array();
-		$result=mysqli_query($link,'SHOW TABLES');
-		while($row=mysqli_fetch_row($result)){
-			$tables[]=$row[0];
-		}
+		$tables=__get_database_tables($link);
 	}else{
 		$tables=is_array($tables)?$tables:explode(',',$tables);
 	}
@@ -57,15 +62,19 @@ function get_database_backup($host,$user,$pass,$name,$tables='*'){
 	};
 	
 	return $return;
-}
-function backup_database($host,$user,$pass,$name,$tables='*'){
-	$return=get_database_backup($host,$user,$pass,$name,$tables);
+};
+function __backup_database($host,$user,$pass,$name,$tables='*'){
+	$return=__get_database_backup($host,$user,$pass,$name,$tables);
 	
-	$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
-	if(is_null($domain)) $domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
-	$file_name=$domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql.gz';
-	$file_name=rtrim($_SERVER['DOCUMENT_ROOT'],'/ ').'/'.$file_name;
+	$file_name=rtrim($_SERVER['DOCUMENT_ROOT'],'/ ').'/'.__get_backup_file_name().'.gz';
 	file_put_contents($file_name,gzencode($return));
 	
 	return $file_name;
-}
+};
+function __get_backup_file_name(){
+	$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
+	if(is_null($domain)) 
+		$domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
+	
+	return $domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql';
+};
