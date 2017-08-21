@@ -1,10 +1,9 @@
 <?php
-function backup_database_tables($host,$user,$pass,$name,$tables){
+function get_database_backup($host,$user,$pass,$name,$tables='*'){
 	$link=mysqli_connect($host,$user,$pass);
 	mysqli_select_db($link,$name);
 	mysqli_query($link,'SET NAMES utf8');
 	
-	//get all of the tables
 	if($tables=='*'){
 		$tables=array();
 		$result=mysqli_query($link,'SHOW TABLES');
@@ -15,7 +14,6 @@ function backup_database_tables($host,$user,$pass,$name,$tables){
 		$tables=is_array($tables)?$tables:explode(',',$tables);
 	}
 	
-	//cycle through each table and format the data
 	foreach($tables as $table){
 			$result=mysqli_query($link,'SELECT * FROM '.$table);
 			$num_rows=mysqli_num_rows($result);
@@ -56,11 +54,18 @@ function backup_database_tables($host,$user,$pass,$name,$tables){
 			};
 				
 			$return.="\n\n\n";
-	}
+	};
 	
-	//save the file	
+	return $return;
+}
+function backup_database($host,$user,$pass,$name,$tables='*'){
+	$return=get_database_backup($host,$user,$pass,$name,$tables);
+	
 	$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
 	if(is_null($domain)) $domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
 	$file_name=$domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql.gz';
-	file_put_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/ ').'/'.$file_name,gzencode($return));
+	$file_name=rtrim($_SERVER['DOCUMENT_ROOT'],'/ ').'/'.$file_name;
+	file_put_contents($file_name,gzencode($return));
+	
+	return $file_name;
 }
