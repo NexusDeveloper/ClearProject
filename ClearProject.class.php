@@ -24,10 +24,9 @@ class ClearProject{
 		if($tables!='*'){
 			$tables=is_array($tables)?$tables:explode(',',$tables);
 		}else{
-			$res=array();
 			$result=mysqli_query($this->db_connection,'SHOW TABLES');
 			while($row=mysqli_fetch_row($result)){
-				$res[]=$row[0];
+				$tables[]=$row[0];
 			};
 		};
 		
