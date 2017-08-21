@@ -18,12 +18,11 @@ class ClearProject{
 		$this->db_name=$name;
 	}
 	
-	private function get_tables($tables='*'){
+	private function get_tables($list='*'){
 		$tables=array();
 		
-		if($tables!='*'){
+		if($list!='*'){
 			$tables=is_array($tables)?$tables:explode(',',$tables);
-			exit('No asterisk');
 		}else{
 			$result=mysqli_query($this->db_connection,'SHOW TABLES');
 			while($row=mysqli_fetch_row($result)){
