@@ -23,6 +23,7 @@ class ClearProject{
 		
 		if($tables!='*'){
 			$tables=is_array($tables)?$tables:explode(',',$tables);
+			exit('No asterisk');
 		}else{
 			$result=mysqli_query($this->db_connection,'SHOW TABLES');
 			while($row=mysqli_fetch_row($result)){
@@ -61,7 +62,6 @@ class ClearProject{
 			return $this->backup;
 		
 		$tables=$this->get_tables($tables);
-		var_dump($tables);exit;
 		$link=&$this->db_connection;
 		$return='/**
 			Date: '.date('Y-m-d H:i:s').'
