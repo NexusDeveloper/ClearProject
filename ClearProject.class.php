@@ -40,7 +40,24 @@ class ClearProject{
 		
 		return $domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql';
 	}
-	private function get_backup($tables='*'){
+	private function get_files($dir){
+		$res=array();
+		
+		$files=array_diff(scandir($dir),array('..', '.'));
+		foreach($files as $file){
+			$path=rtrim($dir,'/').'/'.$file;
+			if(is_file($path) and is_readable($path)){
+				$res[]=$path;
+			}elseif(is_dir($path) and is_readable($path)){
+				$res=array_merge($res,$this->get_files($path));
+			};
+		};
+		
+		return $res;
+	}
+	
+	
+	public function get_backup($tables='*'){
 		if(!empty($this->backup))
 			return $this->backup;
 		
@@ -94,22 +111,6 @@ class ClearProject{
 		
 		return $this->backup=$return;
 	}
-	private function get_files($dir){
-		$res=array();
-		
-		$files=array_diff(scandir($dir),array('..', '.'));
-		foreach($files as $file){
-			$path=rtrim($dir,'/').'/'.$file;
-			if(is_file($path) and is_readable($path)){
-				$res[]=$path;
-			}elseif(is_dir($path) and is_readable($path)){
-				$res=array_merge($res,$this->get_files($path));
-			};
-		};
-		
-		return $res;
-	}
-	
 	public function clear_database($tables='*'){
 		$tables=$this->get_tables($tables);
 		if(empty($tables))
