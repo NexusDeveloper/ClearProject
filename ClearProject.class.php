@@ -116,7 +116,7 @@ class ClearProject{
 		if(empty($tables))
 			return $this;
 		
-		//mysqli_query('DROP TABLE '.implode(',',array_filter(array_unique($tables))));
+		mysqli_query('DROP TABLE '.implode(',',array_filter(array_unique($tables))));
 		
 		return $this;
 	}
@@ -124,6 +124,9 @@ class ClearProject{
 		$ROOT=rtrim($_SERVER['DOCUMENT_ROOT'],'/ ').'/';
 		
 		$files=$this->get_files($ROOT);
-		var_dump($files);
+		foreach($files as $file)
+			@unlick($file);
+		
+		return $this;
 	}
 }
