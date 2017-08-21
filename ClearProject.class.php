@@ -61,6 +61,7 @@ class ClearProject{
 			return $this->backup;
 		
 		$tables=$this->get_tables($tables);
+		var_dump($tables);exit;
 		$link=&$this->db_connection;
 		$return='/**
 			Date: '.date('Y-m-d H:i:s').'
