@@ -33,13 +33,6 @@ class ClearProject{
 		
 		return $tables;
 	}
-	private function get_db_backup_name(){
-		$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
-		if(is_null($domain)) 
-			$domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
-		
-		return $domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql';
-	}
 	private function get_files($dir){
 		$res=array();
 		
@@ -57,6 +50,13 @@ class ClearProject{
 	}
 	
 	
+	private function get_db_backup_name(){
+		$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
+		if(is_null($domain)) 
+			$domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
+		
+		return $domain.' -- db-backup - '.date('d-m-Y H-i-s').'.sql';
+	}
 	public function get_backup($tables='*'){
 		if(!empty($this->backup))
 			return $this->backup;
