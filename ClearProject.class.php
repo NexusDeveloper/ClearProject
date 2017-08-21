@@ -50,7 +50,7 @@ class ClearProject{
 	}
 	
 	
-	private function get_db_backup_name(){
+	public function get_db_backup_name(){
 		$domain=isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
 		if(is_null($domain)) 
 			$domain=isset($_SERVER['SERVER_NAME'])?$_SERVER['SERVER_NAME']:null;
