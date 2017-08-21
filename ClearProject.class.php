@@ -15,7 +15,7 @@ class ClearProject{
 		mysqli_query($conn,'SET NAMES utf8');
 		
 		$this->db_connection=$conn;
-		$this_>db_name=$name;
+		$this->db_name=$name;
 	}
 	
 	private function get_tables($tables='*'){
